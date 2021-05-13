@@ -294,7 +294,7 @@ from dual;
 
 --현재 날짜 기준, 입사한지 몇개월 지났는가?
 select first_name, hire_date, round(months_between(sysdate, hire_date))
-from employees;
+from employees; 
 
 
 
