@@ -123,7 +123,7 @@ from employees
 where salary >= 17000 or
       salary <= 14000;
 
-- 여집합
+-- 여집합
 select first_name, salary
 from employees
 where not (salary <= 14000 or salary >= 17000);
@@ -208,10 +208,9 @@ from employees
 order by hire_date;
 
 --문제 2
-select job_title, max_salary
-from employees
 
-order by salary desc;
+
+
 
 --문제 3
 
@@ -228,6 +227,10 @@ order by max_salary desc;
 --문제 5
 
 
+--문제 7
+select first_name, salary
+from employees
+where first_name like '%s%';
 
 --------------------
 -- 단일행 함수 : 레코드를 입력으로 받음
@@ -296,6 +299,104 @@ from dual;
 select first_name, hire_date, round(months_between(sysdate, hire_date))
 from employees; 
 
+--------------
+--변환 함수
+---------------
+
+--to_number(s, frm) : 문자열 -> 수치형
+--to_date(s, frm) : 문자열 -> 날짜형
+--to_char(o, fmt) : 숫자, 날짜 -> 문자형
+
+--to_char 
+select first_name, hire_date, to_char(hire_date, 'yyyy-mm-dd hh24:mi:ss')
+from employees;
+
+-- 현재 날짜의 포맷
+select sysdate, to_char(sysdate, 'yyyy-mm-dd hh24:mi:ss')
+from dual;
+
+select to_char(123456789.0123, '999,999,999.99') --나머지 표기하지않음
+from dual;
+
+-- 연봉 정보 문자열로 포매팅
+select first_name, to_char(salary*12, '$999,999.99') sal
+from employees;
+
+-- to_number: 문자열 -> 숫자
+select to_number('1,999', '999,999'), to_number('$1,350.99', '$999,999.99')
+from dual;
+
+--to_date : 문자열 -> 날짜
+select to_date('2021-05-05 14: 30', 'yyyy-mm-dd hh24:mi')
+from dual;
+
+--date 연산
+--date +,- number : 날짜에 일수를 더한다,뺸다 -> date
+--date - date : 날짜에서 날짜를 뺀일수
+--date  +,- number(일수) / 24 : 날짜에 시간을 더할때 시간을 24시간으로 나눈값을 더한다,뺀다
+
+select to_char(sysdate, 'yy-mm-dd hh24:mi'),
+    sysdate + 1, --1일후
+    sysdate - 1, --1일전
+    sysdate - to_date('2012-09-24', 'yyyy-mm-dd'), -- 두날짜 차이 일수
+    to_char(sysdate + 13 / 24, 'yy/mm/dd hh24:mi') -- 13시간후 
+from dual;
+
+----------------
+-- null 관련 함수
+---------------
+
+-- nvl 함수 
+select first_name,
+    salary,
+    commission_pct,
+    salary + (salary * nvl (commission_pct, 0)) -- commission_pct가 null이면 0으로 바꾸자
+from employees;
+
+--nvl2 함수
+-- nvl2(표현식, null이 아닐떄의 식, null일 떄의 식)
+select first_name,
+    salary,
+    commission_pct,
+    salary + nvl2(commission_pct, salary * commission_pct, 0)--commission_pct가 널이면 0, 아니면 두번쨰꺼
+from employees;
+
+
+--case 함수
+--보너스를 지급하기로 했습니다.
+-- ad관련 직원에게는 20% sa관련 직원에게는 10% it관련 직원에게는 8%
+-- 나머지는 5%의 보너스를 지급한다
+
+select first_name, job_id, salary, substr(job_id, 1, 2),
+    case substr(job_id, 1, 2) when 'AD' then salary * 0.2
+                                when 'SA' then salary * 0.1
+                                when 'IT' then salary * 0.08
+                                else salary *0.05
+    end as bonus
+from employees;
+
+--decode
+select first_name, job_id, salary, substr(job_id, 1, 2),
+    decode(substr(job_id, 1, 2),
+            'AD', salary * 0.2,
+            'SA', salary * 0.1,
+            'IT', salary * 0.08,
+            salary * 0.05) as bonus
+from employees;
+
+--연습문제
+--department_id - 30이하이면 a그룹
+-- 50이하이면 b그룹
+-- 100이하이면 c그룹
+-- 나머지는 remainder
+select first_name, department_id,
+    case when department_id <=30 then 'A-GROUP'
+        when department_id <=50 then 'B-GROUP'
+        when department_id <=100 then 'C-GROUP'
+        else 'REAMINDER'
+    end as team
+from employees
+order by team;
 
 
 
