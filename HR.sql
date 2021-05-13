@@ -180,7 +180,121 @@ select first_name, salary
 from employees
 where first_name like '__a_';
 
+-- order by : 정렬
+--  asc (오름차순, 기본)
+-- desc (내림차순, 큰것 -> 작은것)
 
+-- 부서번호 오름차순 정렬 -> 부서번호, 급여, 이름 출력
+select department_id, salary, first_name
+from employees
+order by department_id; -- asc는 생략 가능
+
+--급여가 10000 이상 직원의 이름 급여(내림차순)
+select first_name, salary
+from employees
+where salary >= 10000
+order by salary desc;
+
+-- 부서번호, 급여, 이름 select, 부서번호 오름차순, 급여 내림차순
+select department_id, salary, first_name
+from employees
+order by department_id, salary desc;
+
+--문제 1
+select first_name || ' ' || last_name as 이름,
+        salary as 월급, phone_number as 전화번호,
+        hire_date as 입사일
+from employees
+order by hire_date;
+
+--문제 2
+select job_title, max_salary
+from employees
+
+order by salary desc;
+
+--문제 3
+
+
+
+
+--
+--문제 4
+select job_title, max_salary
+from employees
+where max_salary >= 10000
+order by max_salary desc;
+
+--문제 5
+
+
+
+--------------------
+-- 단일행 함수 : 레코드를 입력으로 받음
+--------------------
+
+
+
+-- 문자열 단일행 함수
+select first_name, last_name,
+    concat(first_name, concat(' ', last_name)), -- 결합
+    initcap(first_name || ' ' || last_name),-- 첫글자를 대문자로
+    lower(first_name),--모두소문자
+    upper(first_name),-- 모두대문자
+    lpad(first_name, 20, '*'), -- 20자리 확보, 왼쪽을 *로 채운다
+    rpad(first_name, 20, '*') -- 20자리 확보, 오른쪽을 *로 채움
+from employees;
+
+select '            oracle            ',
+    '********database***********'
+from dual;
+
+select ltrim('            oracle            '),
+    rtrim('            oracle            '),
+    trim('*' from '********database***********'),
+    substr('oracle database', 8, 4),
+    substr('oracle database', -8, -4)
+from dual;
+
+-- 수치형 단일행 함수
+select abs(-3.14), -- 절대값
+    ceil(3.14), -- 소숫점 올림(천장)
+    floor(3.14), -- 소숫점 버림(바닥)
+    mod(7, 3), -- 나머지
+    power(2, 4), -- 제곱
+    round(3.5), -- 반올림
+    round(3.4567, 2), --소숫점 2째짜리까지 반올림으로 변환
+    trunc(3.5), 
+    trunc(3.4567, 2) -- 소숫점 2쨰자리까지 버림으로 표시
+from dual;
+
+---------------------------
+--date format
+-------------------------
+
+--날짜 형식 확인
+select * from nls_session_parameters
+where parameter= 'nls_date_format';
+
+--현재 날짜와 시간
+select sysdate
+from dual; -- dual 가상 테이블로부터 확인
+
+select sysdate
+from employees; -- 테이블로부터 받아오므로 테이블 내 행 갯수만큼을 반환
+
+-- date관련 함수
+select sysdate, -- 현재 날짜와 시간
+    add_months(sysdate, 2), -- 2개월 후의 날짜
+    months_between('99/12/31', sysdate), -- 1999년 12월 31일 ~현재 의 달수
+    next_day(sysdate, 7), -- 현재 날짜 이후의 첫번째 7요일
+    round('21/05/17', 'month'), -- month정보로 반올림
+    trunc('21/05/17', 'month')
+from dual;
+
+--현재 날짜 기준, 입사한지 몇개월 지났는가?
+select first_name, hire_date, round(months_between(sysdate, hire_date))
+from employees;
 
 
 
