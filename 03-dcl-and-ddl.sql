@@ -27,7 +27,7 @@ desc user_users;
 select * from user_users;
 
 desc all_users;
-select * from all_users;
+select username from all_users;
 
 desc dba_users;
 select * from dba_users;

@@ -622,7 +622,9 @@ connect by prior emp.employee_id = emp.manager_id
 order by level;
 
 
-
+select count(first_name)
+from employees
+where first_name is not null;
 
 
 
